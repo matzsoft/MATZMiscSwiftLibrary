@@ -8,7 +8,8 @@
 
 import Foundation
 
-enum AppleScriptError: Error, CustomStringConvertible {
+/// The list of available AppleScriptError exceptions
+public enum AppleScriptError: Error, CustomStringConvertible {
     case cantCreateAppleScriptObject
     case cantGetWindowCount( String )
     case cantGetTabCount( String )
@@ -22,7 +23,7 @@ enum AppleScriptError: Error, CustomStringConvertible {
     case cantActivateSafari( String )
     case noMatchingWindow
     
-    var description: String {
+    public var description: String {
         switch self {
         case .cantCreateAppleScriptObject:
             return "Could not create AppleScript object."
@@ -51,13 +52,17 @@ enum AppleScriptError: Error, CustomStringConvertible {
         }
     }
     
-    var localizedDescription: String {
+    public var localizedDescription: String {
         return description
     }
 }
 
 
-func doAppleScript( script: String ) throws -> NSDictionary? {
+/// Perform an AppleScript and returns any error.
+/// - Parameter script: The Text of script to run.
+/// - Throws: cantCreateAppleScriptObject
+/// - Returns: An NSDictionary? which contains any errors.
+public func doAppleScript( script: String ) throws -> NSDictionary? {
     var error: NSDictionary?
     guard let script = NSAppleScript( source: script ) else {
         throw AppleScriptError.cantCreateAppleScriptObject
@@ -68,7 +73,12 @@ func doAppleScript( script: String ) throws -> NSDictionary? {
 }
 
 
-func getAppleScriptOutput( script: String ) throws -> ( NSAppleEventDescriptor, NSDictionary? ) {
+/// Perform an AppleScript and returns any output and/or error.
+/// - Parameter script: The Text of script to run.
+/// - Throws: cantCreateAppleScriptObject
+/// - Returns: A tuple of ( NSAppleEventDescriptor, NSDictionary? ) which
+///  contains the output in the first element and any errors in the second.
+public func getAppleScriptOutput( script: String ) throws -> ( NSAppleEventDescriptor, NSDictionary? ) {
     var error: NSDictionary?
     guard let script = NSAppleScript( source: script ) else {
         throw AppleScriptError.cantCreateAppleScriptObject
