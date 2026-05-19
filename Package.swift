@@ -4,23 +4,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "MATZMisc",
+    name: "MATZMiscSwiftLibrary",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "MATZMisc",
-            targets: ["MATZMisc"]
+            name: "MATZMiscSwiftLibrary",
+            targets: ["MATZMiscSwiftLibrary"]
         ),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "MATZMisc"
+            name: "MATZMiscSwiftLibrary"
         ),
         .testTarget(
             name: "MATZMiscTests",
-            dependencies: ["MATZMisc"]
+            dependencies: ["MATZMiscSwiftLibrary"]
         ),
     ],
     swiftLanguageModes: [.v6]
