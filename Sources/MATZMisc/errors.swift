@@ -1,5 +1,5 @@
 //         FILE: errors.swift
-//  DESCRIPTION: MATZMisc - ---
+//  DESCRIPTION: MATZMisc - Support for error reporting
 //        NOTES: ---
 //       AUTHOR: Mark T. Johnson, markj@matzsoft.com
 //    COPYRIGHT: © 2026 MATZ Software & Consulting. All rights reserved.

@@ -1,6 +1,6 @@
 //         FILE: Safari.swift
-//  DESCRIPTION: MATZMisc - ---
-//        NOTES: ---
+//  DESCRIPTION: MATZMisc - Support for driving Safari
+//        NOTES: Functions to facilitate automating Safari using AppleScript
 //       AUTHOR: Mark T. Johnson, markj@matzsoft.com
 //    COPYRIGHT: © 2026 MATZ Software & Consulting. All rights reserved.
 //      VERSION: 1.0

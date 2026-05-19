@@ -1,5 +1,5 @@
 //         FILE: prompting.swift
-//  DESCRIPTION: MATZMisc - ---
+//  DESCRIPTION: MATZMisc - Functions to help prompt the program user for input
 //        NOTES: ---
 //       AUTHOR: Mark T. Johnson, markj@matzsoft.com
 //    COPYRIGHT: © 2026 MATZ Software & Consulting. All rights reserved.

@@ -1,5 +1,5 @@
 //         FILE: paths.swift
-//  DESCRIPTION: MATZMisc - ---
+//  DESCRIPTION: MATZMisc - Functions for helping to manipulate file system paths
 //        NOTES: ---
 //       AUTHOR: Mark T. Johnson, markj@matzsoft.com
 //    COPYRIGHT: © 2026 MATZ Software & Consulting. All rights reserved.

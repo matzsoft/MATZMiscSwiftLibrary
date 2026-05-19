@@ -1,5 +1,5 @@
 //         FILE: clipboard.swift
-//  DESCRIPTION: MATZMisc - ---
+//  DESCRIPTION: MATZMisc - Manipulation of the system clipboard
 //        NOTES: ---
 //       AUTHOR: Mark T. Johnson, markj@matzsoft.com
 //    COPYRIGHT: © 2026 MATZ Software & Consulting. All rights reserved.
