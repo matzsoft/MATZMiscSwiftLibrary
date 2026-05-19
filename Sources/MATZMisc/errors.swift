@@ -7,3 +7,18 @@
 //      CREATED: 5/18/26 5:12 PM
 
 import Foundation
+
+/// Used for throwing generalized exceptions.
+///
+/// The init takes one parameter, message: any string describing the error condition.
+public struct RuntimeError: Error {
+    let message: String
+
+    public init( _ message: String ) {
+        self.message = message
+    }
+
+    public var localizedDescription: String {
+        return message
+    }
+}
