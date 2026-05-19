@@ -38,7 +38,7 @@ public func findDirectory( name: String, base: String = #file ) throws -> String
 }
 
 
-extension URL {
+public extension URL {
     /// Obtain the relative path from the base URL to the given URL
     /// - Parameter base: The URL that forms the base of the relative URL
     /// - Returns: The relative path or nil if it can't be determined
