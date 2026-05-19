@@ -18,8 +18,9 @@ import Foundation
 ///   - base: The path of the place to start the search.
 /// - Throws: A RuntimeError if the named directory cannot be found.
 /// - Returns: The full path to the desired directory.
-public func findDirectory( name: String, base: String = #file ) throws -> String {
+public func findDirectory( name: String, base: String? = nil ) throws -> String {
     let fileManager = FileManager.default
+    let base = base ?? fileManager.currentDirectoryPath
     var directory = URL( fileURLWithPath: base ).deletingLastPathComponent().path
     
     while directory != "/" {
