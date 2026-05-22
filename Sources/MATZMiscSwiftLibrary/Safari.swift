@@ -104,41 +104,38 @@ public func findTab( urlPrefix: String ) throws -> Void {
 }
 
 
-/// Get the contents of Safari's active window and tab as text
+public enum SafariContentType: String { case html = "source", text }
+
+
+/// Get the contents of Safari's active window and tab.
+/// - Parameters:
+///   - type: The type of content to get, either .text or .html.
+///   - interval: The number of seconds to sleep between retries.
+///   - retries: The maximum number of retries if the result is empty.
 /// - Throws: One of the following:
 ///   - cantGetDocumentHTML
 ///   - any exception thrown by getAppleScriptOutput
-/// - Returns: The text from the tab split into an Array of lines
-public func getPageText() throws -> [String] {
+/// - Returns: The content from the tab split into an Array of lines
+func getPageContent(
+    _ type: SafariContentType, interval: UInt32 = 2, retries: Int = 5
+) throws -> [String] {
     let scriptText =
-        "tell application \"Safari\" to return text of current tab of window 1"
-    let ( textDescriptor, textError ) = try getAppleScriptOutput( script: scriptText )
-    if let error = textError {
-        throw AppleScriptError.cantGetDocumentHTML( error.description )
-    }
-    guard let theText = textDescriptor.stringValue else {
-        throw AppleScriptError.cantGetDocumentHTML( "returned value is not a string" )
+        "tell application \"Safari\" to return \(type.rawValue) of current tab of window 1"
+    
+    for _ in 0 ... retries {
+        let ( textDescriptor, textError ) = try getAppleScriptOutput( script: scriptText )
+        if let error = textError {
+            throw AppleScriptError.cantGetDocumentHTML( error.description )
+        }
+        guard let theText = textDescriptor.stringValue else {
+            throw AppleScriptError.cantGetDocumentHTML( "returned value is not a string" )
+        }
+        
+        if !theText.isEmpty {
+            return theText.split( separator: "\n" ).map { String( $0 ) }
+        }
+        sleep( interval )
     }
     
-    return theText.split( separator: "\n" ).map { String( $0 ) }
-}
-
-
-/// Get the contents of Safari's active window and tab as HTML
-/// - Throws: One of the following:
-///   - cantGetDocumentHTML
-///   - any exception thrown by getAppleScriptOutput
-/// - Returns: The HTML from the tab split into an Array of lines
-public func getPageHTML() throws -> [String] {
-    let scriptText =
-        "tell application \"Safari\" to return source of current tab of window 1"
-    let ( textDescriptor, textError ) = try getAppleScriptOutput( script: scriptText )
-    if let error = textError {
-        throw AppleScriptError.cantGetDocumentHTML( error.description )
-    }
-    guard let theText = textDescriptor.stringValue else {
-        throw AppleScriptError.cantGetDocumentHTML( "returned value is not a string" )
-    }
-    
-    return theText.split( separator: "\n" ).map { String( $0 ) }
+    throw AppleScriptError.cantGetDocumentHTML( "returned value is empty" )
 }
