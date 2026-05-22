@@ -116,7 +116,7 @@ public enum SafariContentType: String { case html = "source", text }
 ///   - cantGetDocumentHTML
 ///   - any exception thrown by getAppleScriptOutput
 /// - Returns: The content from the tab split into an Array of lines
-func getPageContent(
+public func getPageContent(
     _ type: SafariContentType, interval: UInt32 = 2, retries: Int = 5
 ) throws -> [String] {
     let scriptText =
