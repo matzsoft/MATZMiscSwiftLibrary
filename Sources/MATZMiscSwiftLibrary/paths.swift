@@ -8,36 +8,6 @@
 
 import Foundation
 
-/// Finds the path to a named directory by searching the directory tree.
-///
-/// Starts the search at given path and proceeds up the directory tree until the named
-///  directory is found.
-///
-/// - Parameters:
-///   - name: The name of the desired directory.
-///   - base: The path of the place to start the search.
-/// - Throws: A RuntimeError if the named directory cannot be found.
-/// - Returns: The full path to the desired directory.
-public func findDirectory( name: String, base: String = #file ) throws -> String {
-    let fileManager = FileManager.default
-    var directory = URL( fileURLWithPath: base ).deletingLastPathComponent().path
-    
-    while directory != "/" {
-        var isDir : ObjCBool = false
-        
-        if fileManager.fileExists( atPath: "\(directory)/\(name)", isDirectory:&isDir ) {
-            if isDir.boolValue {
-                return "\(directory)/\(name)"
-            }
-        }
-        
-        directory = URL( fileURLWithPath: directory ).deletingLastPathComponent().path
-    }
-    
-    throw RuntimeError( "Can't find \(name) directory!" )
-}
-
-
 public extension URL {
     /// Obtain the relative path from the base URL to the given URL
     /// - Parameter base: The URL that forms the base of the relative URL
