@@ -13,6 +13,7 @@ import Foundation
 /// - Parameter programName: Name of the program to find
 /// - Returns: The URL of the specified program or nil if not found
 public func which( programName: String ) -> URL? {
+    if programName.contains( "/" ) { return URL( fileURLWithPath: programName ) }
     guard let path = ProcessInfo.processInfo.environment["PATH"] else { return nil }
     
     let paths = path.split(separator: ":").map { String( $0 ) }
@@ -28,30 +29,34 @@ public func which( programName: String ) -> URL? {
     return nil
 }
 
-/// Runs another program in a seperate process and waits for completion
+/// Runs another program in a seperate process and waits for completion.
 /// - Parameters:
-///   - programURL: URL of the file containing the program to run
 ///   - stdout: FileHandle of file to capture stdout of the program or nil to put the
-///    stdout of the program to the caller's stdout
-///   - args: Variadic list of strings to pass as arguments to the program
-/// - Returns: Termination status of the program
-public func shell( programURL: URL, stdout: FileHandle? = nil, _ args: String... ) -> Int32 {
-    shell( programURL: programURL, stdout: stdout, args )
+///    stdout of the program to the caller's stdout.
+///   - args: Variadic list of strings to pass as arguments to the program.
+///    Include program to run in args[0].
+/// - Throws: Any exception thrown by shell( stdout: FileHandle?, _ args: [String] ).
+/// - Returns: Termination status of the program.
+public func shell( stdout: FileHandle?, _ args: String... ) throws -> Int32 {
+    try shell( stdout: stdout, args )
 }
 
 
-/// Runs another program in a seperate process and waits for completion
+/// Runs another program in a seperate process and waits for completion.
 /// - Parameters:
-///   - programURL: URL of the file containing the program to run
 ///   - stdout: FileHandle of file to capture stdout of the program or nil to put the
-///    stdout of the program to the caller's stdout
-///   - args: Array of strings to pass as arguments to the program
-/// - Returns: Termination status of the program
-public func shell( programURL: URL, stdout: FileHandle? = nil, _ args: [String] ) -> Int32 {
+///    stdout of the program to the caller's stdout.
+///   - args: Array of strings to pass as arguments to the program.
+///    Include program to run in args[0].
+/// - Throws: RuntimeError( "shell call must have arguments." )
+/// - Returns: Termination status of the program.
+public func shell( stdout: FileHandle?, _ args: [String] ) throws -> Int32 {
+    if args.isEmpty { throw RuntimeError( "shell call must have arguments." ) }
+    let programURL = which( programName: args[0] )
     let task = Process()
     
     task.executableURL = programURL
-    task.arguments = args
+    task.arguments = args[1...].map { String( $0 ) }
     if let stdout = stdout {
         task.standardOutput = stdout
     }
@@ -61,29 +66,33 @@ public func shell( programURL: URL, stdout: FileHandle? = nil, _ args: [String] 
 }
 
 
-/// Runs another program in a seperate process and waits for completion
+/// Runs another program in a seperate process and waits for completion.
 /// - Parameters:
-///   - programURL: URL of the file containing the program to run
-///   - args: Variadic list of strings to pass as arguments to the program
-/// - Throws: Any exception thrown when the program is run
-/// - Returns: A string containing the stdout of the program
-public func shell( programURL: URL, _ args: String... ) throws -> String {
-    try shell( programURL: programURL, args )
+///   - args: Variadic list of strings to pass as arguments to the program.
+///    Include program to run in args[0].
+/// - Throws: Any exception thrown by shell( _ args: [String] ).
+/// - Returns: A string containing the stdout of the program.
+public func shell( _ args: String... ) throws -> String {
+    try shell( args )
 }
 
 
-/// Runs another program in a seperate process and waits for completion
+/// Runs another program in a seperate process and waits for completion.
 /// - Parameters:
-///   - programURL: URL of the file containing the program to run
-///   - args: Array of strings to pass as arguments to the program
-/// - Throws: Any exception thrown when the program is run
-/// - Returns: A string containing the stdout of the program
-public func shell( programURL: URL, _ args: [String] ) throws -> String {
+///   - args: Array of strings to pass as arguments to the program.
+///    Include program to run in args[0].
+/// - Throws: Any of the following:
+///   - RuntimeError( "shell call must have arguments." )
+///   - Any exception thrown by task.run().
+/// - Returns: A string containing the stdout of the program.
+public func shell( _ args: [String] ) throws -> String {
+    if args.isEmpty { throw RuntimeError( "shell call must have arguments." ) }
+    let programURL = which( programName: args[0] )
     let task = Process()
     let pipe = Pipe()
 
     task.executableURL = programURL
-    task.arguments = args
+    task.arguments = args[1...].map { String( $0 ) }
     task.standardOutput = pipe
 
     try task.run()
