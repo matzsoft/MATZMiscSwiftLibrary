@@ -57,3 +57,10 @@ extension Array where Element: RandomAccessCollection, Element.Element: Any {
         }
     }
 }
+
+
+extension Int {
+    public func string( unit: String ) -> String {
+        "\(self) \(unit)\(self == 1 ? "" : "s" )"
+    }
+}
