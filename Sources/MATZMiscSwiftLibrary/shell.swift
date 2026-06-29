@@ -37,7 +37,9 @@ public func which( programName: String ) -> URL? {
 ///    Include program to run in args[0].
 /// - Throws: Any exception thrown by shell( stdout: FileHandle?, _ args: [String] ).
 /// - Returns: Termination status of the program.
-public func shell( stdout: FileHandle?, _ args: String... ) throws -> Int32 {
+public func shell(
+    stdout: FileHandle?, stderr: FileHandle? = nil, _ args: String...
+) throws -> Int32 {
     try shell( stdout: stdout, args )
 }
 
@@ -50,16 +52,17 @@ public func shell( stdout: FileHandle?, _ args: String... ) throws -> Int32 {
 ///    Include program to run in args[0].
 /// - Throws: RuntimeError( "shell call must have arguments." )
 /// - Returns: Termination status of the program.
-public func shell( stdout: FileHandle?, _ args: [String] ) throws -> Int32 {
+public func shell(
+    stdout: FileHandle?, stderr: FileHandle? = nil, _ args: [String]
+) throws -> Int32 {
     if args.isEmpty { throw RuntimeError( "shell call must have arguments." ) }
     let programURL = which( programName: args[0] )
     let task = Process()
     
     task.executableURL = programURL
     task.arguments = args[1...].map { String( $0 ) }
-    if let stdout = stdout {
-        task.standardOutput = stdout
-    }
+    task.standardOutput = stdout
+    task.standardError = stderr
     task.launch()
     task.waitUntilExit()
     return task.terminationStatus
