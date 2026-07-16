@@ -59,6 +59,15 @@ extension Array where Element: RandomAccessCollection, Element.Element: Any {
 }
 
 
+extension Array {
+    public func chunks( of size: Int ) -> [[Element]] {
+        stride( from: 0, to: count, by: size ).map {
+            Array( self[ $0 ..< Swift.min( $0 + size, count ) ] )
+        }
+    }
+}
+
+
 extension Int {
     public func string( unit: String ) -> String {
         "\(self) \(unit)\(self == 1 ? "" : "s" )"
