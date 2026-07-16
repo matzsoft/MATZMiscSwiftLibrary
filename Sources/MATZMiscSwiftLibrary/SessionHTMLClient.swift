@@ -15,11 +15,20 @@ enum SessionHTMLError: Error {
     case responseNotUTF8
 }
 
+/// An actor that creates a client that can be used to access webpages from a domain that
+/// requires a sessionID cookie.
 public actor SessionHTMLClient {
     private let baseURL: URL
     private let session: URLSession
     private let cookieStorage: HTTPCookieStorage
-
+    
+    /// Initialize a client with the information it needs.
+    /// - Parameters:
+    ///   - baseURL: The URL of the domain that the client can access.
+    ///   - sessionID: The value of the required sessionID cookie.
+    /// - Throws:
+    ///   - SessionHTMLError.invalidBaseURL
+    ///   - SessionHTMLError.invalidCookie
     public init( baseURL: URL, sessionID: String ) throws {
         self.baseURL = baseURL
 
@@ -50,7 +59,14 @@ public actor SessionHTMLClient {
 
         cookieStorage.setCookie( cookie )
     }
-
+    
+    /// Fetches the HTML from a page of the baseURL.
+    /// - Parameter path: The path component(s) to add to the baseURL.
+    /// - Throws:
+    ///   - URLError
+    ///   - SessionHTMLError.badStatusCode
+    ///   - SessionHTMLError.responseNotUTF8
+    /// - Returns: A string containing the HTML from the selected page.
     public func fetchPageHTML( _ path: String ) async throws -> String {
         let url = baseURL.appendingPathComponent( path )
         var request = URLRequest( url: url )

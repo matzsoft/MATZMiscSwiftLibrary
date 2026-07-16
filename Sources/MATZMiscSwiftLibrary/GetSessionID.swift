@@ -8,7 +8,12 @@
 
 import Foundation
 
-public func getSessionID( entityID: String ) throws -> String {
+/// Obtains the sessionID value from a particular 1Password entry.
+/// Requires that the 1Password CLI API is installed and the sessionID is stored in the one-time password field.
+/// - Parameter entryName: The name of the entry in 1Password to access.
+/// - Throws: A RuntimeError if the seessionID cannot be found.
+/// - Returns: A String containing the sessionID.
+public func getSessionID( entryName: String ) throws -> String {
     struct OPItem: Decodable {
         let fields: [OPField]
     }
@@ -19,7 +24,7 @@ public func getSessionID( entityID: String ) throws -> String {
         let label: String?
     }
 
-    let json = try shell( "/usr/local/bin/op", "item", "get", entityID, "--format", "json" )
+    let json = try shell( "/usr/local/bin/op", "item", "get", entryName, "--format", "json" )
     let jsonData = json.data( using: .utf8 )!
     
     // 2. Decode the structured JSON payload automatically

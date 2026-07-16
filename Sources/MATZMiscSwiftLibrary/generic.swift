@@ -46,6 +46,8 @@ extension String {
 
 
 extension Array where Element: RandomAccessCollection, Element.Element: Any {
+    /// Transposes the rows and columns of a 2D Array.
+    /// - Returns: A copy of the original Array but with the rows and columns transposed.
     public func transpose() -> [[Element.Element]] {
         guard !isEmpty else { return [] }
         guard self.allSatisfy( { $0.count == first!.count } ) else { fatalError() }
@@ -60,6 +62,10 @@ extension Array where Element: RandomAccessCollection, Element.Element: Any {
 
 
 extension Array {
+    /// Converts an [Element] into an [[Element]] where each nested array is of the specified
+    /// size, except possibly for the last which may be smaller.
+    /// - Parameter size: The number of Element entries in each chunk.
+    /// - Returns: A copy of the original array but split into chunks.
     public func chunks( of size: Int ) -> [[Element]] {
         stride( from: 0, to: count, by: size ).map {
             Array( self[ $0 ..< Swift.min( $0 + size, count ) ] )
@@ -69,6 +75,9 @@ extension Array {
 
 
 extension Int {
+    /// Provides primitive support for appending a singular or plural unit description to an Int.
+    /// - Parameter unit: A string containing the singular version of the units of the Int.
+    /// - Returns: A string that defines the Int with a unit descriptor attached with primitive plural support.
     public func string( unit: String ) -> String {
         "\(self) \(unit)\(self == 1 ? "" : "s" )"
     }
