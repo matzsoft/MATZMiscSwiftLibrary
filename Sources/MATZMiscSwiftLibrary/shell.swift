@@ -33,14 +33,14 @@ public func which( programName: String ) -> URL? {
 /// - Parameters:
 ///   - stdout: FileHandle of file to capture stdout of the program or nil to put the
 ///    stdout of the program to the caller's stdout.
+///   - stderr: FileHandle of file to capture stderr of the program or nil to put the
+///    stderr of the program to the caller's stderr.
 ///   - args: Variadic list of strings to pass as arguments to the program.
 ///    Include program to run in args[0].
 /// - Throws: Any exception thrown by shell( stdout: FileHandle?, _ args: [String] ).
 /// - Returns: Termination status of the program.
-public func shell(
-    stdout: FileHandle?, stderr: FileHandle? = nil, _ args: String...
-) throws -> Int32 {
-    try shell( stdout: stdout, args )
+public func shell( stdout: FileHandle? = nil, stderr: FileHandle? = nil, _ args: String... ) throws -> Int32 {
+    try shell( stdout: stdout, stderr: stderr, args )
 }
 
 
@@ -48,22 +48,22 @@ public func shell(
 /// - Parameters:
 ///   - stdout: FileHandle of file to capture stdout of the program or nil to put the
 ///    stdout of the program to the caller's stdout.
+///   - stderr: FileHandle of file to capture stderr of the program or nil to put the
+///    stderr of the program to the caller's stderr.
 ///   - args: Array of strings to pass as arguments to the program.
 ///    Include program to run in args[0].
 /// - Throws: RuntimeError( "shell call must have arguments." )
 /// - Returns: Termination status of the program.
-public func shell(
-    stdout: FileHandle?, stderr: FileHandle? = nil, _ args: [String]
-) throws -> Int32 {
+public func shell( stdout: FileHandle? = nil, stderr: FileHandle? = nil, _ args: [String] ) throws -> Int32 {
     if args.isEmpty { throw RuntimeError( "shell call must have arguments." ) }
     let programURL = which( programName: args[0] )
     let task = Process()
     
     task.executableURL = programURL
-    task.arguments = args[1...].map { String( $0 ) }
-    task.standardOutput = stdout
-    task.standardError = stderr
-    task.launch()
+    task.arguments = Array( args.dropFirst() )
+    if stdout != nil { task.standardOutput = stdout }
+    if stderr != nil { task.standardError = stderr }
+    try task.run()
     task.waitUntilExit()
     return task.terminationStatus
 }
